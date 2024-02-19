@@ -23,10 +23,17 @@ class _NewItemState extends State<NewItem> {
               child: Column(
             children: [
               TextFormField(
-                maxLength: 50,
-                decoration: InputDecoration(label: Text('Name')),
-                validator: (value) => 'demo...',
-              ),
+                  maxLength: 50,
+                  decoration: InputDecoration(label: Text('Name')),
+                  validator: (value) {
+                    if (value == null ||
+                        value.isEmpty ||
+                        value.trim() == 1 ||
+                        value.length > 50) {
+                      return "Must be between 1 and 50 characters";
+                    }
+                    return null;
+                  }),
               const SizedBox(
                 width: 8,
               ),
@@ -38,10 +45,18 @@ class _NewItemState extends State<NewItem> {
                 children: [
                   Expanded(
                     child: TextFormField(
-                      decoration:
-                          const InputDecoration(label: Text("Quantity")),
-                      initialValue: '1',
-                    ),
+                        decoration:
+                            const InputDecoration(label: Text("Quantity")),
+                        initialValue: '1',
+                        validator: (value) {
+                          if (value == null ||
+                              value.isEmpty ||
+                              int.tryParse(value) == null ||
+                              int.tryParse(value)! <= 0) {
+                            return 'Must be a valid, positive number.';
+                          }
+                          return null;
+                        }),
                   ),
                   Expanded(
                     child: DropdownButtonFormField(items: [
