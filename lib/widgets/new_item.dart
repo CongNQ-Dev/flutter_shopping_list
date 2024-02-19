@@ -30,6 +30,9 @@ class _NewItemState extends State<NewItem> {
               const SizedBox(
                 width: 8,
               ),
+              SizedBox(
+                height: 12,
+              ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -62,6 +65,14 @@ class _NewItemState extends State<NewItem> {
                   )
                 ],
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(onPressed: () {}, child: const Text("Reset")),
+                  ElevatedButton(
+                      onPressed: () {}, child: const Text("Add Item"))
+                ],
+              )
             ],
           )),
         ));
