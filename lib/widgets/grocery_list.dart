@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_shopping_list/data/dummy_items.dart';
-import 'package:flutter_shopping_list/data/dummy_items.dart';
-import 'package:flutter_shopping_list/models/grocery_item.dart';
 import 'package:flutter_shopping_list/widgets/new_item.dart';
 
 class GroceryList extends StatefulWidget {
@@ -14,7 +12,7 @@ class GroceryList extends StatefulWidget {
 class _GroceryListState extends State<GroceryList> {
   void _addItem(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => NewItem(),
+      builder: (context) => const NewItem(),
     ));
   }
 
@@ -28,7 +26,7 @@ class _GroceryListState extends State<GroceryList> {
                 onPressed: () {
                   _addItem(context);
                 },
-                icon: Icon(Icons.add))
+                icon: const Icon(Icons.add))
           ],
         ),
         body: ListView.builder(
