@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_shopping_list/data/categories.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import 'package:flutter_shopping_list/models/grocery_item.dart';
 import 'package:flutter_shopping_list/widgets/new_item.dart';
@@ -11,18 +14,50 @@ class GroceryList extends StatefulWidget {
 }
 
 class _GroceryListState extends State<GroceryList> {
-  final List<GroceryItem> _groceryItems = [];
-  void _addItem(BuildContext context) async {
-    final newItem =
-        await Navigator.of(context).push<GroceryItem>(MaterialPageRoute(
-      builder: (context) => const NewItem(),
-    ));
-    if (newItem == null) {
-      return;
+  List<GroceryItem> _groceryItems = [];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _loadItems();
+  }
+
+  void _loadItems() async {
+    final url = Uri.https(
+        'flutter-prep-47c99-default-rtdb.asia-southeast1.firebasedatabase.app',
+        'shopping-list.json');
+    final response = await http.get(url);
+
+    final Map<String, dynamic> listData = json.decode(response.body);
+
+    final List<GroceryItem> _loadedItemList = [];
+    for (final item in listData.entries) {
+      final category = categories.entries
+          .firstWhere((categoryItem) =>
+              categoryItem.value.title == item.value['category'])
+          .value;
+      _loadedItemList.add(GroceryItem(
+          id: item.key,
+          name: item.value['name'],
+          quantity: item.value['quantity'],
+          category: category));
     }
     setState(() {
-      _groceryItems.add(newItem);
+      _groceryItems = _loadedItemList;
     });
+  }
+
+  void _addItem(BuildContext context) async {
+    await Navigator.of(context).push<GroceryItem>(MaterialPageRoute(
+      builder: (context) => const NewItem(),
+    ));
+    await _loadItems;
+    // if (newItem == null) {
+    //   return;
+    // }
+    // setState(() {
+    //   _groceryItems.add(newItem);
+    // });
   }
 
   void _removeItem(GroceryItem item) {
