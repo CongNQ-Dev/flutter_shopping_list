@@ -30,34 +30,41 @@ class _GroceryListState extends State<GroceryList> {
 
     final Map<String, dynamic> listData = json.decode(response.body);
 
-    final List<GroceryItem> _loadedItemList = [];
+    final List<GroceryItem> loadedItemList = [];
     for (final item in listData.entries) {
       final category = categories.entries
           .firstWhere((categoryItem) =>
               categoryItem.value.title == item.value['category'])
           .value;
-      _loadedItemList.add(GroceryItem(
+      loadedItemList.add(GroceryItem(
           id: item.key,
           name: item.value['name'],
           quantity: item.value['quantity'],
           category: category));
     }
     setState(() {
-      _groceryItems = _loadedItemList;
+      _groceryItems = loadedItemList;
     });
   }
 
   void _addItem(BuildContext context) async {
-    await Navigator.of(context).push<GroceryItem>(MaterialPageRoute(
+    final newItem =
+        await Navigator.of(context).push<GroceryItem>(MaterialPageRoute(
       builder: (context) => const NewItem(),
     ));
-    await _loadItems;
+
     // if (newItem == null) {
     //   return;
     // }
     // setState(() {
     //   _groceryItems.add(newItem);
     // });
+    if (newItem == null) {
+      return;
+    }
+    setState(() {
+      _groceryItems.add(newItem);
+    });
   }
 
   void _removeItem(GroceryItem item) {
