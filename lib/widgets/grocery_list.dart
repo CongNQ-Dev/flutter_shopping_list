@@ -27,6 +27,7 @@ class _GroceryListState extends State<GroceryList> {
     final url = Uri.https(
         'flutter-prep-47c99-default-rtdb.asia-southeast1.firebasedatabase.app',
         'shopping-list.json');
+
     try {
       final response = await http.get(url);
       if (response.statusCode >= 400) {
@@ -62,6 +63,35 @@ class _GroceryListState extends State<GroceryList> {
         _errorMessage = 'Something went wrong. Try again later';
       });
     }
+    final response = await http.get(url);
+    if (response.statusCode >= 400) {
+      setState(() {
+        _errorMessage = 'Failed to fetching data. Try again later';
+      });
+    }
+    if (response.body == 'null') {
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
+    final Map<String, dynamic> listData = json.decode(response.body);
+
+    final List<GroceryItem> loadedItemList = [];
+    for (final item in listData.entries) {
+      final category = categories.entries
+          .firstWhere((categoryItem) =>
+              categoryItem.value.title == item.value['category'])
+          .value;
+      loadedItemList.add(GroceryItem(
+          id: item.key,
+          name: item.value['name'],
+          quantity: item.value['quantity'],
+          category: category));
+    }
+    setState(() {
+      _groceryItems = loadedItemList;
+    });
   }
 
   void _addItem(BuildContext context) async {
